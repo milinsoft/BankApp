@@ -3,8 +3,7 @@ from datetime import date, datetime
 from sqlalchemy.exc import SQLAlchemyError
 from tabulate import tabulate
 
-from app.tools import FileManager
-from app.tools.transactions_manager import TransactionsManager
+from app.tools import FileManager, TransactionsManager
 from settings import DATE_FORMAT
 
 

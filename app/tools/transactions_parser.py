@@ -2,6 +2,8 @@ from datetime import date
 from decimal import Decimal
 from typing import List, Tuple
 
+from app.models import TransactionData
+
 from .fetchers import CSVTransactionsFetcher
 
 
@@ -27,7 +29,7 @@ class TransactionParser:
         return cls.STRATEGY_MAPPING.get(file_path.split('.')[-1])
 
     @classmethod
-    def parse_data(cls, file_path: str) -> List[Tuple[date, str, Decimal]]:
+    def parse_data(cls, file_path: str) -> [TransactionData]:
         if not (parse_manager := cls._get_strategy(file_path)):
             raise ValueError(f'Unsupported file format.')
         return parse_manager.parse_file(file_path)

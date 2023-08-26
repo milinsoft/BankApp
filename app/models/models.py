@@ -1,11 +1,24 @@
 from datetime import date, datetime
 from decimal import Decimal
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, TypedDict
 
 from sqlalchemy import CheckConstraint, Column, Date, ForeignKey, Integer, Numeric, String
 from sqlalchemy.orm import declarative_base, relationship, validates
 
 Base = declarative_base()
+
+TransactionData = TypedDict('TransactionData', {'date': date, 'description': str, 'amount': Decimal})
+
+
+class Transaction(Base):
+    __tablename__ = 'transaction'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    date = Column(Date, nullable=False)
+    description = Column(String, nullable=False)
+    amount = Column(Numeric(10, 2), nullable=False)
+    account_id = Column(Integer, ForeignKey('account.id'), nullable=False)
+    account = relationship('Account', backref='Transaction')
 
 
 class AccountType:
@@ -41,7 +54,7 @@ class Account(Base):
         transactions_prior_date = self.get_range_transactions(end_date=trx_date)
         return sum((t.amount for t in transactions_prior_date))
 
-    def get_range_transactions(self, start_date: date = None, end_date: date = None) -> List['Transaction']:
+    def get_range_transactions(self, start_date: date = None, end_date: date = None) -> List[Transaction]:
         if not start_date and not end_date:
             return self.Transaction
 
@@ -51,9 +64,9 @@ class Account(Base):
         return sorted([t for t in self.Transaction if start_date <= t.date <= end_date], key=lambda _t: _t.date)
 
     # interface
-    def create_transactions(self, transactions_data: Tuple[date, str, Decimal]) -> ['Transaction']:
+    def create_transactions(self, transactions_data: List[TransactionData]) -> List[Transaction]:
         """create transactions without saving"""
-        new_balance = self.balance + sum(row[2] for row in transactions_data)
+        new_balance = self.balance + sum(_t['amount'] for _t in transactions_data)
         if new_balance < self.credit_limit:
             raise ValueError(
                 f'\nImpossible to import data, as your account balance would go less than {self.credit_limit}'
@@ -62,18 +75,4 @@ class Account(Base):
         # update balance
         self.balance = new_balance
 
-        return [
-            Transaction(date=date, description=description, amount=amount, account_id=self.id)
-            for date, description, amount in transactions_data
-        ]
-
-
-class Transaction(Base):
-    __tablename__ = 'transaction'
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    date = Column(Date, nullable=False)
-    description = Column(String, nullable=False)
-    amount = Column(Numeric(10, 2), nullable=False)
-    account_id = Column(Integer, ForeignKey('account.id'), nullable=False)
-    account = relationship('Account', backref='Transaction')
+        return [Transaction(**_t, account_id=self.id) for _t in transactions_data]
