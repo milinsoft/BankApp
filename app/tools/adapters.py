@@ -1,6 +1,6 @@
 from datetime import date, datetime
 from decimal import ROUND_HALF_UP, Decimal
-from typing import Tuple
+from typing import List, Tuple
 
 from app.models import Transaction
 from settings import DATE_FORMAT
@@ -12,7 +12,7 @@ class TransactionsAdapter:
         pass
 
     @staticmethod
-    def adapt(transactions_data: List[str, str, str]) -> Tuple[date, str, Decimal]:
+    def adapt(transactions_data: List[str]) -> Tuple[date, str, Decimal]:
         date_str, description, amount_str = transactions_data
         try:
             transaction_date = datetime.strptime(date_str, DATE_FORMAT).date()

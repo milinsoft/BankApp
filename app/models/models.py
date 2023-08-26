@@ -48,7 +48,7 @@ class Account(Base):
         start_date = start_date or datetime.min.date()
         end_date = end_date or date.today()
 
-        return [t for t in self.Transaction if start_date <= t.date <= end_date]
+        return sorted([t for t in self.Transaction if start_date <= t.date <= end_date], key=lambda _t: _t.date)
 
     # interface
     def create_transactions(self, transactions_data: Tuple[date, str, Decimal]) -> ['Transaction']:
