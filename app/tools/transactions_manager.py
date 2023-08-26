@@ -5,7 +5,7 @@ from typing import List, Tuple
 from sqlalchemy.exc import SQLAlchemyError
 from tabulate import tabulate
 
-from app.models import Account
+from app.models import Account, Transaction
 from app.tools import TransactionParser
 
 

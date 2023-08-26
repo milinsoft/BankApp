@@ -1,6 +1,6 @@
 from datetime import date
 from decimal import Decimal
-from typing import List, Optional, Tuple
+from typing import List, Tuple
 
 from .fetchers import CSVTransactionsFetcher
 
@@ -23,7 +23,7 @@ class TransactionParser:
     STRATEGY_MAPPING = {'csv': CSVTransactionsFetcher}
 
     @classmethod
-    def _get_strategy(cls, file_path) -> Optional[Tuple[CSVTransactionsFetcher]]:
+    def _get_strategy(cls, file_path) -> CSVTransactionsFetcher:
         return cls.STRATEGY_MAPPING.get(file_path.split('.')[-1])
 
     @classmethod

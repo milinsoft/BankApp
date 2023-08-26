@@ -27,9 +27,9 @@ class CSVTransactionsFetcher:
 
                 try:
                     adapted_data = TransactionsAdapter.adapt(row)
+                    parsed_data.append(adapted_data)
 
                 except ValueError as err:
                     print(f'Row number {row_number}: {err}')
 
-                parsed_data.append(adapted_data)
         return parsed_data

@@ -1,6 +1,6 @@
 from datetime import date, datetime
 from decimal import Decimal
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from sqlalchemy import CheckConstraint, Column, Date, ForeignKey, Integer, Numeric, String
 from sqlalchemy.orm import declarative_base, relationship, validates
@@ -33,12 +33,12 @@ class Account(Base):
         ),
     )
 
-    def get_balance_on_date(self, date: date = None) -> Decimal:
+    def get_balance_on_date(self, trx_date: Optional[date] = None) -> int | float:
         today_date = date.today()
-        date = date or today_date
-        assert date <= today_date, 'You cannot lookup in the future! :)'
+        trx_date = trx_date or today_date
+        assert trx_date <= today_date, 'You cannot lookup in the future! :)'
 
-        transactions_prior_date = self.get_range_transactions(end_date=date)
+        transactions_prior_date = self.get_range_transactions(end_date=trx_date)
         return sum((t.amount for t in transactions_prior_date))
 
     def get_range_transactions(self, start_date: date = None, end_date: date = None) -> List['Transaction']:

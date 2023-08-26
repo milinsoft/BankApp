@@ -12,7 +12,7 @@ class TransactionsAdapter:
         pass
 
     @staticmethod
-    def adapt(transactions_data: Tuple[str]) -> Transaction:
+    def adapt(transactions_data: List[str, str, str]) -> Tuple[date, str, Decimal]:
         date_str, description, amount_str = transactions_data
         try:
             transaction_date = datetime.strptime(date_str, DATE_FORMAT).date()
