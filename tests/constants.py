@@ -1,6 +1,10 @@
+import os
+
+# done this way to make sure CI works
+test_directory = os.path.abspath(os.path.join(os.path.dirname(__file__), 'test_data'))
 # paths to data folders
-valid_test_files_dir = 'test_data/valid'
-invalid_test_files_dir = 'test_data/invalid'
+valid_test_files_dir = f'{test_directory}/valid'
+invalid_test_files_dir = f'{test_directory}/invalid'
 
 # test files with invalid data
 UNSUPPORTED_FILE_FORMAT = f'{invalid_test_files_dir}/unsupported_file_format.jpeg'

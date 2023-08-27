@@ -1,9 +1,8 @@
 import unittest
 from unittest.mock import patch
 
-from constants import TEST_FILE_1, TEST_FILE_2
-
 from app.tools.file_manager import FileManager
+from tests.constants import TEST_FILE_1, TEST_FILE_2
 
 
 class TestFileManager(unittest.TestCase):

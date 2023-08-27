@@ -5,7 +5,6 @@ from datetime import date, datetime, timedelta
 from decimal import ROUND_HALF_UP, Decimal
 from typing import List, Tuple
 
-from constants import TEST_AMOUNTS, TEST_DATES
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -14,6 +13,7 @@ from app.db import Base, setup_database
 from app.models import Account, AccountType, Transaction, TransactionData
 from app.tools import TransactionParser, TransactionsManager
 from settings import DATE_FORMAT, TEST_DB_URL
+from tests.constants import TEST_AMOUNTS, TEST_DATES
 
 # define list of exports
 __all__ = ['unittest', 'date', 'timedelta', 'TransactionParser', 'BankAppCommon']
