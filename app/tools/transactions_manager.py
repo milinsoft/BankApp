@@ -6,7 +6,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from tabulate import tabulate
 
 from app.models import Account, Transaction
-from app.tools import TransactionParser
+
+from .transactions_parser import TransactionParser
 
 
 class TransactionsManager:
@@ -28,13 +29,13 @@ class TransactionsManager:
         self.session.commit()
 
     def _update_account_balance(self, transactions_data):
-        self.current_account.balance += sum(row[2] for row in transactions_data)
+        self.current_account.balance += sum(_t['amount'] for _t in transactions_data)
 
-    def search_transactions(self, start_date: date, end_date: date) -> List['Transaction']:
+    def search_transactions(self, start_date: date, end_date: date) -> List[Transaction]:
         return self.current_account.get_range_transactions(start_date, end_date)
 
     @staticmethod
-    def display_transactions(transactions: List['Transaction']):
+    def display_transactions(transactions: List[Transaction]):
         """Display transactions in a tabular format."""
         table_data = [(t.date, t.description, t.amount) for t in transactions]
         print(
