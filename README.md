@@ -55,16 +55,33 @@ The Bank App offers the following features:
 
 ## Installation
 
+###### standard
+
 Ensure you have Python 3.11.4 or above installed.
 
 1. Clone this repository.
 2. Navigate to the project directory.
 3. Install dependencies: `pip install -r requirements.txt`
 
+###### docker
+`sudo docker pull parseltongist/bank_app`
+
 ## Usage
 
 1. Prepare your transaction data in the required CSV format.
-2. Run the Bank App using the provided command: `python3 bank_app`.
+2. Run the Bank App using the provided command: `python3 bank_app` or `sudo docker run -it parseltongist/bank_app` if using Docker.
 3. Follow the on-screen prompts to import your transactions and manage your accounts.
 
+<details>
+  <summary>
+    <h2>
+      Demo files
+    </h2>
+  </summary>
+  Either version you chose, you can play with the following test file paths for upload:
+
+  `bank_app/tests/test_data/valid/transactions_1.csv`</br>
+  `bank_app/tests/test_data/valid/transactions_2.csv`</br>
+  `bank_app/tests/test_data/valid/transactions_3.csv`</br>
+</details>
 
