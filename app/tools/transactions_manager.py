@@ -1,13 +1,12 @@
 from datetime import date
 from decimal import Decimal
-from typing import List, Tuple
+from typing import List
 
 from sqlalchemy.exc import SQLAlchemyError
 from tabulate import tabulate
 
 from app.models import Account, Transaction
-
-from .transactions_parser import TransactionParser
+from app.tools import TransactionParser
 
 
 class TransactionsManager:
@@ -16,7 +15,7 @@ class TransactionsManager:
         self.current_account = current_account
 
     def import_data(self, file_path: str):
-        transactions_data = TransactionParser.parse_data(file_path)
+        transactions_data = TransactionParser(file_path).data
         self._save_to_db(transactions_data)
 
     def _save_to_db(self, transactions_data):

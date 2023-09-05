@@ -1,13 +1,20 @@
+from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
-from typing import List, Optional, Tuple, TypedDict
+from enum import Enum
+from typing import List, Optional, Tuple
 
 from sqlalchemy import CheckConstraint, Column, Date, ForeignKey, Integer, Numeric, String
 from sqlalchemy.orm import declarative_base, relationship, validates
 
 Base = declarative_base()
 
-TransactionData = TypedDict('TransactionData', {'date': date, 'description': str, 'amount': Decimal})
+
+@dataclass
+class TransactionData:
+    date: date
+    description: str
+    amount: Decimal
 
 
 class Transaction(Base):
@@ -21,10 +28,7 @@ class Transaction(Base):
     account = relationship('Account', backref='Transaction')
 
 
-class AccountType:
-    def __init__(self):
-        pass
-
+class AccountType(Enum):
     CREDIT = 'Credit'
     DEBIT = 'Debit'
 
@@ -40,8 +44,8 @@ class Account(Base):
 
     __table_args__ = (
         CheckConstraint(
-            f"(account_type = '{AccountType.DEBIT}' AND credit_limit = 0 AND balance >= 0) OR "
-            f"(account_type = '{AccountType.CREDIT}' AND credit_limit < 0 AND balance >= credit_limit)",
+            f"(account_type = '{AccountType.DEBIT.value}' AND credit_limit = 0 AND balance >= 0) OR "
+            f"(account_type = '{AccountType.CREDIT.value}' AND credit_limit < 0 AND balance >= credit_limit)",
             name='Balance and credit limit constraints',
         ),
     )
@@ -66,7 +70,7 @@ class Account(Base):
     # interface
     def create_transactions(self, transactions_data: List[TransactionData]) -> List[Transaction]:
         """create transactions without saving"""
-        new_balance = self.balance + sum(_t['amount'] for _t in transactions_data)
+        new_balance = self.balance + sum(_t.amount for _t in transactions_data)
         if new_balance < self.credit_limit:
             raise ValueError(
                 f'\nImpossible to import data, as your account balance would go less than {self.credit_limit}'
@@ -75,4 +79,7 @@ class Account(Base):
         # update balance
         self.balance = new_balance
 
-        return [Transaction(**_t, account_id=self.id) for _t in transactions_data]
+        return [
+            Transaction(date=_t.date, description=_t.description, amount=_t.amount, account_id=self.id)
+            for _t in transactions_data
+        ]

@@ -1,1 +1,1 @@
-from .bank_app import BankApp
+from .bank_app_cli import BankAppCLI

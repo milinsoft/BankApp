@@ -1,13 +1,15 @@
 from datetime import date, datetime
+from typing import Optional, Dict
 
 from sqlalchemy.exc import SQLAlchemyError
 from tabulate import tabulate
 
-from app.tools import FileManager, TransactionsManager
+from app.models import Account
+from app.tools import TransactionsManager, get_file_path
 from settings import DATE_FORMAT
 
 
-class BankApp:
+class BankAppCLI:
     MENU_OPTIONS = {
         '0': 'Exit',
         '1': 'Import transactions (supported formats are: csv)',
@@ -18,9 +20,9 @@ class BankApp:
 
     def __init__(self, session):
         self.session = session
-        self.accounts = {}
-        self.current_account = None
-        self.transactions_manager = None
+        self.accounts: Dict[str, Account] = {}
+        self.current_account: Optional[Account] = None
+        self.transactions_manager: Optional[TransactionsManager] = None
 
     def main_menu(self):
         print('Welcome to the Bank App!')
@@ -34,14 +36,14 @@ class BankApp:
 
     def import_data(self):
         try:
-            self.transactions_manager.import_data(FileManager.get_file_path())
+            self.transactions_manager.import_data(get_file_path())
             print(f'Transactions have been loaded successfully! Current balance: {self.current_account.balance}')
         except (ValueError, SQLAlchemyError) as err:
             print(err)
 
     def show_balance(self):
-        date = self.get_date(mode='end_date')
-        print(f'Your balance on {date} is: ', self.current_account.get_balance_on_date(date))
+        target_date = self.get_date(mode='end_date')
+        print(f'Your balance on {target_date} is: ', self.current_account.get_balance_on_date(target_date))
 
     def search_transactions(self):
         transactions = self.transactions_manager.search_transactions(
