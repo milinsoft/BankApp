@@ -45,10 +45,10 @@ class BankAppCommon(unittest.TestCase):
     # noinspection PyPep8Naming
     @classmethod
     def tearDownClass(cls) -> None:
-        """ remove db file after all tests run"""
+        """remove db file after all tests run"""
         try:
             os.remove(TEST_DB_URL.replace('sqlite:///', ''))
-        except(FileNotFoundError, PermissionError, IsADirectoryError, OSError) as e:
+        except (FileNotFoundError, PermissionError, IsADirectoryError, OSError) as e:
             print(e)
 
     @staticmethod

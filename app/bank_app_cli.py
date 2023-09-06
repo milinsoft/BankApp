@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Optional, Dict
+from typing import Dict, Optional
 
 from sqlalchemy.exc import SQLAlchemyError
 from tabulate import tabulate
