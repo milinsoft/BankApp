@@ -26,7 +26,7 @@ def adapt_transactions(transactions_data: List[str]) -> TransactionData:
         if transaction_amount == 0:
             raise ValueError
     except (ValueError, InvalidOperation):
-        raise ValueError(f'Incorrect transaction amount!')
+        raise ValueError('Incorrect transaction amount!')
 
     return TransactionData(transaction_date, description, transaction_amount)
 
@@ -86,5 +86,5 @@ class TransactionParser:
 
     def parse_data(self) -> [TransactionData]:
         if not (parse_manager := self._get_strategy()):
-            raise ValueError(f'Unsupported file format.')
+            raise ValueError('Unsupported file format.')
         return parse_manager.parse_file(self.file_path)

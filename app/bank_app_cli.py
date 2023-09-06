@@ -2,7 +2,6 @@ from datetime import date, datetime
 from typing import Dict, Optional
 
 from sqlalchemy.exc import SQLAlchemyError
-from tabulate import tabulate
 
 from app.models import Account
 from app.tools import TransactionsManager, get_file_path

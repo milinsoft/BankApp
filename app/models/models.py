@@ -2,10 +2,10 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
 from enum import Enum
-from typing import List, Optional, Tuple
+from typing import List, Optional
 
 from sqlalchemy import CheckConstraint, Column, Date, ForeignKey, Integer, Numeric, String
-from sqlalchemy.orm import declarative_base, relationship, validates
+from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
