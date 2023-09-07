@@ -1,26 +1,23 @@
 """Class setup and helper methods"""
 
+import os
 import unittest
 from datetime import date, datetime, timedelta
 from decimal import ROUND_HALF_UP, Decimal
-from typing import List, Tuple
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from app import BankApp
+from app import BankAppCLI
 from app.db import Base, setup_database
-from app.models import Account, AccountType, Transaction, TransactionData
-from app.tools import TransactionParser, TransactionsManager
+from app.models import Account, AccountType
+from app.tools import TransactionsManager
 from settings import DATE_FORMAT, TEST_DB_URL
 from tests.constants import TEST_AMOUNTS, TEST_DATES
 
-# define list of exports
-__all__ = ['unittest', 'date', 'timedelta', 'TransactionParser', 'BankAppCommon']
-
 
 class BankAppCommon(unittest.TestCase):
-    """Test cases for the BankApp class."""
+    """Test cases for the BankAppCLI class."""
 
     # noinspection PyPep8Naming
     # noinspection PyAttributeOutsideInit
@@ -29,9 +26,9 @@ class BankAppCommon(unittest.TestCase):
         self.engine = create_engine(TEST_DB_URL)
         setup_database(self.engine)  # Create tables if they don't exist
         self.session = sessionmaker(bind=self.engine)()
-        self.bank_app = BankApp(self.session)
-        self.debit_acc = Account(name='Test Debit Account', account_type=AccountType.DEBIT)
-        self.credit_acc = Account(name='Test Credit Account', account_type=AccountType.CREDIT, credit_limit=-3000)
+        self.bank_app = BankAppCLI(self.session)
+        self.debit_acc = Account(name='Test Debit Account', account_type=AccountType.DEBIT.value)
+        self.credit_acc = Account(name='Test Credit Account', account_type=AccountType.CREDIT.value, credit_limit=-3000)
         self.session.add_all((self.debit_acc, self.credit_acc))
         self.session.commit()
         self.trx_manager_debit_acc = TransactionsManager(self.session, self.debit_acc)
@@ -43,6 +40,15 @@ class BankAppCommon(unittest.TestCase):
         self.session.rollback()
         self.session.close()
         Base.metadata.drop_all(self.engine)
+
+    # noinspection PyPep8Naming
+    @classmethod
+    def tearDownClass(cls) -> None:
+        """remove db file after all tests run"""
+        try:
+            os.remove(TEST_DB_URL.replace('sqlite:///', ''))
+        except (FileNotFoundError, PermissionError, IsADirectoryError, OSError) as e:
+            print(e)
 
     @staticmethod
     def convert_to_decimal(amount: float) -> Decimal:
