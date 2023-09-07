@@ -2,10 +2,11 @@ from datetime import date, datetime
 from os.path import exists
 from typing import Dict, Optional
 
+from sqlalchemy.exc import SQLAlchemyError
+
 from app.models import Account
 from app.tools import TransactionsManager
 from settings import DATE_FORMAT
-from sqlalchemy.exc import SQLAlchemyError
 
 
 class BankAppCLI:

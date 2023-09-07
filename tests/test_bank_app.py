@@ -4,13 +4,14 @@ from datetime import date, datetime, timedelta
 from decimal import ROUND_HALF_UP, Decimal
 from unittest.mock import patch
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
 from app import BankAppCLI
 from app.db import Base, setup_database
 from app.models import Account, AccountType
 from app.tools import TransactionsManager
 from settings import DATE_FORMAT, TEST_DB_URL
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from tests.constants import (
     INVALID_DATA_DATE_FORMAT,
     INVALID_DATA_EMPTY_AMOUNT,
