@@ -1,11 +1,10 @@
 from datetime import date
 from typing import List
 
-from sqlalchemy.exc import SQLAlchemyError
-from tabulate import tabulate
-
 from app.models import Account, Transaction
 from app.tools import TransactionParser
+from sqlalchemy.exc import SQLAlchemyError
+from tabulate import tabulate
 
 
 class TransactionsManager:

@@ -1,5 +1,4 @@
 import csv
-from abc import ABC, abstractmethod
 from datetime import date, datetime
 from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
 from typing import List
