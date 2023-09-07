@@ -3,9 +3,8 @@ from typing import Dict
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from app.models import Account, AccountType, Base
-
 # base must be imported from models, to proper functioning, otherwise tables won't be created.
+from app.models import Account, AccountType, Base
 from settings import DEFAULT_CREDIT_LIMIT
 
 

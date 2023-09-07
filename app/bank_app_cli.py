@@ -36,20 +36,19 @@ class BankAppCLI:
 
     def import_data(self):
         try:
-            self.transactions_manager.import_data(cls.get_file_path())
+            self.transactions_manager.import_data(self.get_file_path())
             print(f'Transactions have been loaded successfully! Current balance: {self.current_account.balance}')
         except (ValueError, SQLAlchemyError) as err:
             print(err)
 
     @classmethod
     def get_file_path(cls) -> str:
-        file_path = False
-        while not file_path:
+        while True:
             file_path = input('Please provide the path to your file: ').strip("'\"")
             if not exists(file_path):
                 print('Incorrect file path, please try again!')
-                file_path = False
-        return file_path
+            else:
+                return file_path
 
     def show_balance(self):
         target_date = self.get_date(mode='end_date')
