@@ -7,7 +7,7 @@ WORKDIR /app
 
 RUN set -ex \
     && apk add --update --no-cache git python3 py3-pip \
-    && git clone $GIT_REPO_URL $PROJECT_FOLDER \
+    && git clone $GIT_REPO_URL $PROJECT_FOLDER -b main --depth=1\
     && pip install -r $PROJECT_FOLDER/requirements.txt \
     && ln -sf /usr/bin/python3.11 /usr/bin/python \
     && apk del git \
