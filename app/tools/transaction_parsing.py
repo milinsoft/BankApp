@@ -3,7 +3,7 @@ from datetime import date, datetime
 from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
 from typing import List
 
-from app.models import Transaction, TransactionData
+from app.models import TransactionData
 from settings import CSV_ROW_LENGTH, DATE_FORMAT
 
 
