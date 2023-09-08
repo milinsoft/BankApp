@@ -9,7 +9,7 @@ def check_python_version():
     required_python_version = (3, 11)
     current_python_version = sys.version_info[:2]
     if current_python_version < required_python_version:
-        print(f'This script requires Python {required_version[0]}.{required_version[1]} or above.')
+        print(f'This script requires Python {required_python_version[0]}.{required_python_version[1]} or above.')
         sys.exit(1)
 
 
