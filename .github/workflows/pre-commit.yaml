@@ -12,3 +12,8 @@ jobs:
         with:
           python-version: 3.11
       - uses: pre-commit/action@v3.0.1
+  docker-build:
+    uses: actions/checkout@v4
+    name: Build Docker Container
+    run: |
+      docker build -t $DOCKER_IMAGE_NAME:latest .
