@@ -10,7 +10,7 @@ repos:
         name: prettier (with plugin-xml)
         additional_dependencies:
           - "prettier@3.1.0"
-          - "@prettier/plugin-xml"
+          - "@prettier/plugin-xml@1.1.0"
         args:
           - --plugin=@prettier/plugin-xml
           - --xml-self-closing-space=false

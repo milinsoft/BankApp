@@ -11,7 +11,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 21.7.2
-      - run: npm install -g prettier @prettier/plugin-xml
+      - run: npm install -g prettier @prettier/plugin-xml --save-dev
       - uses: actions/setup-python@v5
         with:
           python-version: 3.11
