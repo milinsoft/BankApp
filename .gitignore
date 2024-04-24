@@ -1,0 +1,5 @@
+.python-version
+*.database
+*.db
+*.idea
+*/__pycache__/

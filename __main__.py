@@ -1,26 +1,27 @@
 import sys
+from logging import getLogger
 
-from app import BankAppCLI
-from app.db import create_session, set_default_accounts
+from app.database import Database
+from app.interface import BankAppCli
 from settings import DB_URL
 
+_logger = getLogger(__name__)
+MAJOR = 3
+MINOR = 11
 
-def check_python_version():
-    required_python_version = (3, 11)
-    current_python_version = sys.version_info[:2]
-    if current_python_version < required_python_version:
-        print(f'This script requires Python {required_python_version[0]}.{required_python_version[1]} or above.')
+
+def check_python_version(min_version=(MAJOR, MINOR)):
+    if sys.version_info[:2] < min_version:
+        _logger.error(f"Python {min_version[0]}.{min_version[1]} or above is required.")
         sys.exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     check_python_version()
-    db_session = create_session(DB_URL)
-    app = BankAppCLI(db_session)
-    # initiate 1 credit and 1 Debit accounts.
-    app.accounts = set_default_accounts(db_session)
+    db_session = Database(DB_URL).session
+    app = BankAppCli(db_session)
     try:
         app.main_menu()
     except KeyboardInterrupt:
         db_session.close()
-        print('\nGoodbye!')
+        print("\nGoodbye!")
