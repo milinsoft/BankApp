@@ -1,32 +1,23 @@
 ---
-name: Docker build
+name: Docker build and tests
 on:
-  push:
-    branches:
-      - main
+  pull_request:
 env:
   DOCKER_IMAGE_NAME: parseltongist/bank_app
   DOCKERFILE_DIRECTORY: ./
 jobs:
-  build:
+  build-and-run-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Build Docker Image
+        # $GITHUB_HEAD_REF works only with pull_request trigger
         run: |
-          docker build -t $DOCKER_IMAGE_NAME:latest .
+          docker build -t test-tag --build-arg="branch=$GITHUB_HEAD_REF" .
         working-directory: ${{ env.DOCKERFILE_DIRECTORY }}
-      - name: Log in to Docker Hub
-        if: success()
+      - name: Run tests via Docker
         run: |
-          echo ${{ secrets.DOCKER_PASSWORD }} |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Push Docker image to the Docker Hub
-        if: success()
-        run: |
-          docker push $DOCKER_IMAGE_NAME:latest
-        working-directory: ${{ env.DOCKERFILE_DIRECTORY }}
+          docker run test-tag -c "
+            /app/venv/bin/python -m unittest discover bank_app
+          "
