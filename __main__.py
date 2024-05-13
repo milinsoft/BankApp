@@ -21,5 +21,5 @@ if __name__ == "__main__":
     app = BankAppCli(db)
     try:
         app.main_menu()
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, EOFError):
         print("\nGoodbye!")
