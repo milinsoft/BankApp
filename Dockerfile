@@ -16,4 +16,4 @@ RUN set -ex \
     && rm -rf /var/cache/apk/* /root/.cache $PROJECT_FOLDER/.git
 
 ENTRYPOINT ["sh"]
-CMD ["-c", "/app/venv/bin/python", "bank_app"]
+CMD ["-c", "/app/venv/bin/python bank_app"]
