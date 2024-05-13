@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Deploy to DockerHub
+        description: docker tag
         required: false
 env:
   DOCKER_IMAGE_NAME: parseltongist/bank_app
