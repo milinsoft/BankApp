@@ -1,9 +1,8 @@
 import sys
 from logging import getLogger
 
+from app.cli import BankAppCli
 from app.database import Database
-from app.interface import BankAppCli
-from settings import DB_URL
 
 _logger = getLogger(__name__)
 MAJOR = 3
@@ -18,10 +17,9 @@ def check_python_version(min_version=(MAJOR, MINOR)):
 
 if __name__ == "__main__":
     check_python_version()
-    db_session = Database(DB_URL).session
-    app = BankAppCli(db_session)
+    db = Database()
+    app = BankAppCli(db)
     try:
         app.main_menu()
     except KeyboardInterrupt:
-        db_session.close()
         print("\nGoodbye!")

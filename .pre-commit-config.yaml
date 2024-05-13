@@ -1,19 +1,15 @@
 ---
 default_language_version:
-  python: python3
+  python: python3.11
   node: "14.18.0"
 repos:
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v2.4.1
     hooks:
       - id: prettier
-        name: prettier (with plugin-xml)
+        name: prettier
         additional_dependencies:
           - "prettier@2.4.1"
-          - "@prettier/plugin-xml@1.1.0"
-        args:
-          - --plugin=@prettier/plugin-xml
-          - --xml-self-closing-space=false
         files: \.(css|htm|html|js|json|jsx|less|md|scss|toml|ts|xml|yaml|yml)$
   - repo: https://github.com/PyCQA/flake8
     rev: 7.0.0
@@ -118,3 +114,8 @@ repos:
       - id: black
         args:
           - --config=pyproject.toml
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.10.0
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-tabulate==0.9.0.20240106]

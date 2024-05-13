@@ -1,5 +1,2 @@
-from .base import Base
-from .account import Account
+from .models import Base, Account, Transaction
 from .bank_app import BankApp
-from .orm_independent import AccountType, TransactionData
-from .transaction import Transaction
