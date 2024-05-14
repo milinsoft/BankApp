@@ -7,4 +7,4 @@ class TestTransactionParser(TestBankAppCommon):
     def test_01_parsing_strategy_unsupported_format(self):
         """Test import of unsupported file"""
         with self.assertRaises(ValueError):
-            self.bank_app.parser.parse_data(UNSUPPORTED_FILE_FORMAT)
+            self.bank_app.parser.parse_data(UNSUPPORTED_FILE_FORMAT, self.debit_acc_id)

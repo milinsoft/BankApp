@@ -1,11 +1,12 @@
 from threading import Lock
+from typing import Any
 
 
 class Singleton(type):
     _instance = None
     _lock = Lock()
 
-    def __new__(cls, *args, **kwargs) -> type["Singleton"]:
+    def __new__(cls, *args: Any, **kwargs: Any) -> Any:
         if not cls._instance:
             with cls._lock:
                 # Another thread could have created the instance

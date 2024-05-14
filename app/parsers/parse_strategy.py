@@ -1,33 +1,18 @@
 from abc import ABC, abstractmethod
-from datetime import date, datetime
-from decimal import Decimal, InvalidOperation
+from decimal import InvalidOperation
 from typing import TYPE_CHECKING
 
-import settings
+from app.utils.helper_methods import to_decimal
 
 if TYPE_CHECKING:
-    from app.domain_classes import TransactionData
+    from decimal import Decimal
+
+    from app.schemas import STransactionAdd
 
 
-def check_description(description: str) -> None:
-    if not description:
-        raise ValueError("Missing transaction description!")
-
-
-def convert_str_to_date(date_as_str: str, date_format: str = settings.DATE_FORMAT) -> date:
+def parse_trx_amount(amount: str) -> "Decimal":
     try:
-        converted_date = datetime.strptime(date_as_str, date_format).date()
-    except ValueError:
-        raise ValueError(f"Wrong date format! Provided value: {date_as_str} Please use {date_format}")
-    if converted_date > date.today():
-        raise ValueError("Transaction date is in the future!")
-    return converted_date
-
-
-def convert_str_to_decimal_amount(amount_as_str: str, rounding: str = settings.ROUNDING) -> Decimal:
-    try:
-        # TODO: refactor duplicate with method defined in tests
-        converted_amount = Decimal(amount_as_str).quantize(Decimal("0.00"), rounding=rounding)
+        converted_amount = to_decimal(amount)
         if not converted_amount:
             raise ValueError
     except (ValueError, InvalidOperation):
@@ -35,8 +20,13 @@ def convert_str_to_decimal_amount(amount_as_str: str, rounding: str = settings.R
     return converted_amount
 
 
+def check_description(description: str) -> None:
+    if not description:
+        raise ValueError("Missing transaction description!")
+
+
 class AbstractParseStrategy(ABC):
     @classmethod
     @abstractmethod
-    def parse_data(cls, file_path: str) -> list["TransactionData"]:
+    def parse_data(cls, file_path: str, account_id: int) -> list["STransactionAdd"]:
         raise NotImplementedError

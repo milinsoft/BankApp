@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
 import settings
-from app.models import Base
+from app.models.orm import Base
 from app.utils import Singleton
 
 if TYPE_CHECKING:
@@ -25,8 +25,15 @@ class Database(metaclass=Singleton):
     def __init__(self, db_url: str = settings.DB_URL) -> None:
         self.db_url: str = db_url
         self.engine: "Engine" = create_engine(self.db_url)
-        # Create tables if they don't exist
-        Base.metadata.create_all(self.engine)
+        self._create_tables()
 
     def create_session(self) -> Session:
         return sessionmaker(bind=self.engine)()
+
+    def _create_tables(self):
+        # Create tables if they don't exist
+        Base.metadata.create_all(self.engine)
+
+    def _drop_tables(self):
+        if self.db_url == settings.TEST_DB_URL:
+            Base.metadata.drop_all(self.engine)

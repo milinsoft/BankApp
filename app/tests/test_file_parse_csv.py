@@ -17,7 +17,7 @@ class TestFileParseCSV(TestBankAppCommon):
     def test_01_parse_transactions(self):
         """Test parsing transactions and checking account balance."""
         # GIVEN
-        parsed_data = self.parse_data(TRANSACTIONS_1)
+        parsed_data = self.parse_data(TRANSACTIONS_1, self.debit_acc_id)
         # WHEN
         self.create_transactions(self.debit_acc_id, parsed_data)
         # THEN
@@ -27,29 +27,29 @@ class TestFileParseCSV(TestBankAppCommon):
     def test_02_parse_file_with_INCORRECT_date(self):
         """Test parse file with incorrect date format"""
         with self.assertRaises(ValueError):
-            self.bank_app.parser.parse_data(INCORRECT_DATA_DATE_FORMAT)
+            self.bank_app.parser.parse_data(INCORRECT_DATA_DATE_FORMAT, self.debit_acc_id)
 
     def test_03_parse_file_without_amount(self):
         """Test parse file with skipped amount"""
         with self.assertRaises(ValueError):
-            self.bank_app.parser.parse_data(INCORRECT_DATA_EMPTY_AMOUNT)
+            self.bank_app.parser.parse_data(INCORRECT_DATA_EMPTY_AMOUNT, self.debit_acc_id)
 
     def test_04_parse_file_without_description(self):
         """Test parse file without transaction description"""
         with self.assertRaises(ValueError):
-            self.bank_app.parser.parse_data(INCORRECT_DATA_EMPTY_DESCRIPTION)
+            self.bank_app.parser.parse_data(INCORRECT_DATA_EMPTY_DESCRIPTION, self.debit_acc_id)
 
     def test_05_parse_transactions_header_only(self):
         """Test parse correct header, but missing transactions"""
         with self.assertRaises(ValueError):
-            self.bank_app.parser.parse_data(INCORRECT_DATA_HEADER_ONLY)
+            self.bank_app.parser.parse_data(INCORRECT_DATA_HEADER_ONLY, self.debit_acc_id)
 
     def test_06_parse_transactions_wrong_header(self):
         """Test parse data with INCORRECT header"""
         with self.assertRaises(ValueError):
-            self.bank_app.parser.parse_data(INCORRECT_DATA_WRONG_HEADER)
+            self.bank_app.parser.parse_data(INCORRECT_DATA_WRONG_HEADER, self.debit_acc_id)
 
     def test_07_parse_file_with_amount_zero(self):
         """Test parse file containing row with the amount 0"""
         with self.assertRaises(ValueError):
-            self.bank_app.parser.parse_data(INCORRECT_DATA_ZERO_AMOUNT)
+            self.bank_app.parser.parse_data(INCORRECT_DATA_ZERO_AMOUNT, self.debit_acc_id)

@@ -1,4 +1,4 @@
-from app.models import Transaction
+from app.models.orm import Transaction
 from app.utils import SqlAlchemyRepository
 
 
