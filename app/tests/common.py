@@ -8,14 +8,13 @@ from typing import TYPE_CHECKING, Optional
 import settings
 from app.cli import BankAppCli
 from app.database import Database
-from app.domain_classes import AccountType
-from app.models import Base
+from app.models import AccountType
 
 if TYPE_CHECKING:
     from datetime import date
 
-    from app.domain_classes import TransactionData
     from app.models import BankApp
+    from app.schemas import STransactionAdd
 
 
 # Done this way to make sure CI works
@@ -25,10 +24,6 @@ correct_test_files_dir = f"{test_directory}/correct"
 incorrect_test_files_dir = f"{test_directory}/incorrect"
 
 _logger = getLogger(__name__)
-
-
-def convert_to_decimal(amount: float, rounding: str) -> Decimal:
-    return Decimal(amount).quantize(Decimal("0.00"), rounding=rounding)
 
 
 class TestBankAppCommon(unittest.TestCase):
@@ -43,7 +38,7 @@ class TestBankAppCommon(unittest.TestCase):
         self.debit_acc_id: int = self.bank_app.acc_service.create_one(self.bank_app.uow, AccountType.CREDIT)
 
     def tearDown(self) -> None:
-        Base.metadata.drop_all(self.db.engine)
+        self.db._drop_tables()
 
     # noinspection PyPep8Naming
     @classmethod
@@ -57,17 +52,17 @@ class TestBankAppCommon(unittest.TestCase):
             _logger.error(e)
 
     # HELPER METHODS
-    def parse_data(self, file_path: str) -> list["TransactionData"]:
-        return self.bank_app.parser.parse_data(file_path)
+    def parse_data(self, file_path: str, account_id: int) -> list["STransactionAdd"]:
+        return self.bank_app.parser.parse_data(file_path, account_id)
 
     def get_balance(self, account_id: int, trx_date: Optional["date"] = None) -> Decimal:
         return self.bank_app.acc_service.get_balance(self.bank_app.uow, account_id, trx_date)
 
-    def create_transactions(self, account_id: int, data: list["TransactionData"]) -> tuple[list[int], "Decimal"]:
+    def create_transactions(self, account_id: int, data: list["STransactionAdd"]) -> tuple[list[int], "Decimal"]:
         return self.bank_app.trx_service.create(self.bank_app.uow, account_id, data)
 
     def _test_credit_limit(
-        self, account_id: int, transactions: list["TransactionData"], expect_error: bool
+        self, account_id: int, transactions: list["STransactionAdd"], expect_error: bool
     ) -> tuple[list[int], Decimal] | None:
         new_transactions: list[int] = []
         balance: Decimal = Decimal(0)

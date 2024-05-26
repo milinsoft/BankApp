@@ -1,4 +1,3 @@
-from dataclasses import asdict
 from datetime import date, datetime
 from decimal import Decimal
 from typing import TYPE_CHECKING
@@ -6,8 +5,7 @@ from typing import TYPE_CHECKING
 from sqlalchemy import and_, desc
 
 if TYPE_CHECKING:
-    from app.domain_classes import TransactionData
-    from app.schemas import TransactionSchema
+    from app.schemas import STransaction, STransactionAdd
     from app.utils import AbstractUnitOfWork
 
 
@@ -15,7 +13,7 @@ class TransactionService:
     @classmethod
     def get_by_date_range(
         cls, uow: "AbstractUnitOfWork", account_id: int, start_date: date | None = None, end_date: date | None = None
-    ) -> list["TransactionSchema"]:
+    ) -> list["STransaction"]:
         start_date = start_date or datetime.min.date()
         end_date = end_date or date.today()
         with uow:
@@ -28,15 +26,11 @@ class TransactionService:
 
     @classmethod
     def create(
-        cls, uow: "AbstractUnitOfWork", account_id: int, data: list["TransactionData"]
+        cls, uow: "AbstractUnitOfWork", account_id: int, data: list["STransactionAdd"]
     ) -> tuple[list[int], "Decimal"]:
-        amount_to_add = Decimal(0)
-        data_dicts = []
-        for trx_data in data:
-            data_dicts.append(asdict(trx_data.set_account_id(account_id)))
-            amount_to_add += trx_data.amount
+        amount_to_add = Decimal(sum(trx.amount for trx in data))
         with uow:  # single transaction
-            transactions = uow.transactions.create_multi(data_dicts)
+            transactions = uow.transactions.create_multi(data=data)
             new_balance = uow.account.update_balance(account_id=account_id, amount_to_add=amount_to_add)
             uow.commit()
             return transactions, new_balance

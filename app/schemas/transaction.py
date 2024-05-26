@@ -1,15 +1,17 @@
 from datetime import date
 from decimal import Decimal
 
-from pydantic import BaseModel, PositiveInt
+from pydantic import PositiveInt
+
+from .model_schema import ModelSchema
 
 
-class TransactionSchema(BaseModel):
-    id: PositiveInt
+class STransactionAdd(ModelSchema):
     date: date
-    description: str
     amount: Decimal
+    description: str
     account_id: PositiveInt
 
-    class Config:  # noqa: D105,D106
-        from_attributes = True
+
+class STransaction(STransactionAdd):
+    id: PositiveInt

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from app.parsers.csv import ParseCsv
 
 if TYPE_CHECKING:
-    from app.domain_classes import TransactionData
+    from app.schemas import STransactionAdd
 
     from .csv import AbstractParseStrategy
 
@@ -23,8 +23,8 @@ class TransactionParser:
     def _get_strategy(self, file_path: str) -> type["AbstractParseStrategy"] | None:
         return self.strategy_map.get(file_path.split(".")[-1].lower())
 
-    def parse_data(self, file_path: str) -> list["TransactionData"]:
+    def parse_data(self, file_path: str, account_id: int) -> list["STransactionAdd"]:
         if not (parser := self._get_strategy(file_path)):
             raise ValueError("Unsupported file format.")
-        data = parser.parse_data(file_path)
+        data = parser.parse_data(file_path, account_id)
         return data

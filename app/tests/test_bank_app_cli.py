@@ -4,7 +4,8 @@ from io import StringIO
 from unittest.mock import patch
 
 import settings
-from app.tests.common import TestBankAppCommon, convert_to_decimal, correct_test_files_dir
+from app.tests.common import TestBankAppCommon, correct_test_files_dir
+from app.utils.helper_methods import to_decimal
 
 # Test files with CORRECT data
 TRANSACTIONS_1 = f"{correct_test_files_dir}/transactions_1.csv"
@@ -22,7 +23,7 @@ TEST_DATES = (
     date(2023, 8, 24),
 )
 TEST_AMOUNTS = [
-    convert_to_decimal(charge, settings.ROUNDING)
+    to_decimal(charge, settings.ROUNDING)
     for charge in (0, 100_000.00, 99_987.75, 99_967.5, 99_761.5, 99_761.51, 96_523.0, 296_523.0)
 ]
 
@@ -31,7 +32,7 @@ class TestBankApp(TestBankAppCommon):
     def test_01_balance_on_date(self):
         """Test account balance on specific dates."""
         # GIVEN
-        parsed_data = self.parse_data(TRANSACTIONS_1)
+        parsed_data = self.parse_data(TRANSACTIONS_1, self.debit_acc_id)
         # WHEN
         self.create_transactions(self.debit_acc_id, parsed_data)
         # THEN
@@ -47,14 +48,14 @@ class TestBankApp(TestBankAppCommon):
     def test_03_debit_acc_negative_balance(self):
         """Test handling negative balance in a Debit and Credit accounts."""
         # GIVEN
-        parsed_data = self.parse_data(TRANSACTIONS_2)
+        parsed_data = self.parse_data(TRANSACTIONS_2, self.debit_acc_id)
         # WHEN/THEN
         self._test_credit_limit(self.debit_acc_id, parsed_data, expect_error=True)
         self._test_credit_limit(self.credit_acc_id, parsed_data, expect_error=True)
 
     def test_04_credit_acc_limit_no_exception(self):
         # GIVEN
-        parsed_data = self.parse_data(TRANSACTIONS_3)
+        parsed_data = self.parse_data(TRANSACTIONS_3, self.debit_acc_id)
         # WHEN
         transaction_ids, balance = self._test_credit_limit(self.debit_acc_id, parsed_data, expect_error=False)
         # THEN
@@ -64,7 +65,7 @@ class TestBankApp(TestBankAppCommon):
     def test_05_transactions_lookup_by_range(self):
         """Test transactions search by range"""
         # GIVEN
-        parsed_data = self.parse_data(TRANSACTIONS_1)
+        parsed_data = self.parse_data(TRANSACTIONS_1, self.debit_acc_id)
         # WHEN
         self.create_transactions(self.debit_acc_id, parsed_data)
         # THEN
@@ -76,7 +77,7 @@ class TestBankApp(TestBankAppCommon):
                 len(self.bank_app.trx_service.get_by_date_range(self.bank_app.uow, self.debit_acc_id, end_date=_date)),
             )
 
-    def test_07_get_file_path_with_retry(self):
+    def test_06_get_file_path_with_retry(self):
         with patch("builtins.input", side_effect=["clearly_non_existing_path", TRANSACTIONS_1, TRANSACTIONS_2]):
             # mute prints
             with patch("sys.stdout", new=StringIO()):

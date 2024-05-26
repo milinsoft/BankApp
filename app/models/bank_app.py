@@ -6,7 +6,7 @@ AccountID = Annotated[int, "Bank Account ID"]
 if TYPE_CHECKING:
     from app.database import Database
     from app.parsers import TransactionParser
-    from app.schemas import TransactionSchema
+    from app.schemas import STransaction
     from app.services import AccountService, TransactionService
     from app.utils import AbstractUnitOfWork
 
@@ -37,5 +37,5 @@ class BankApp(ABC):
 
     @classmethod
     @abstractmethod
-    def _get_transaction_table(cls, transactions: list["TransactionSchema"]) -> str:
+    def _get_transaction_table(cls, transactions: list["STransaction"]) -> str:
         raise NotImplementedError

@@ -8,14 +8,13 @@ from tabulate import tabulate
 
 import settings
 from app.database import Database
-from app.domain_classes import AccountType
-from app.models import BankApp
+from app.models import AccountType, BankApp
 from app.parsers import TransactionParser
 from app.services import AccountService, TransactionService
 from app.utils import UnitOfWork
 
 if TYPE_CHECKING:
-    from app.schemas import TransactionSchema
+    from app.schemas import STransaction
     from app.utils import AbstractUnitOfWork
 
 
@@ -48,7 +47,7 @@ class BankAppCli(BankApp):
 
     def import_data(self):
         try:
-            trx_data = self.parser.parse_data(self.get_file_path())
+            trx_data = self.parser.parse_data(self.get_file_path(), account_id=self.account_id)
             _, balance = self.trx_service.create(self.uow, self.account_id, trx_data)
             print(f"Transactions have been loaded successfully! Current balance: {balance}")
         except (ValueError, SQLAlchemyError) as err:
@@ -70,7 +69,7 @@ class BankAppCli(BankApp):
             self.acc_service.get_balance(self.uow, self.account_id, _date),
         )
 
-    def _search_transactions(self) -> list["TransactionSchema"]:
+    def _search_transactions(self) -> list["STransaction"]:
         return self.trx_service.get_by_date_range(
             self.uow, self.account_id, self._get_date("start_date"), self._get_date("end_date")
         )
@@ -133,7 +132,7 @@ class BankAppCli(BankApp):
         self.account_id = existing_account.id if existing_account else self.acc_service.create_one(self.uow, acc_type)
 
     @classmethod
-    def _get_transaction_table(cls, transactions: list["TransactionSchema"]) -> str:
+    def _get_transaction_table(cls, transactions: list["STransaction"]) -> str:
         """Return transactions in a tabular str format."""
         return tabulate(
             [(t.date, t.description, t.amount) for t in transactions],
