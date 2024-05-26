@@ -18,6 +18,9 @@ jobs:
         run: |
           docker build -t $DOCKER_IMAGE_NAME:${{ inputs.tag }} .
         working-directory: ${{ env.DOCKERFILE_DIRECTORY }}
+      - name: Configure Docker to user credentials helper
+        run: |
+          echo '{ "credsStore": "secretservice" }' > ~/.docker/config.json
       - name: Log in to Docker Hub
         if: success()
         run: |
@@ -27,6 +30,3 @@ jobs:
         if: success()
         run: docker push $DOCKER_IMAGE_NAME:${{ inputs.tag }}
         working-directory: ${{ env.DOCKERFILE_DIRECTORY }}
-      - name: Docker Logout
-        if: success()
-        run: docker logout
