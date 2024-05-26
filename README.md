@@ -80,8 +80,8 @@ Ensure you have Python 3.11.4 or above installed.
   </summary>
   Either version you chose, you can play with the following test file paths for upload:
 
-`bank_app/app/tests/test_data/valid/transactions_1.csv`</br>
-`bank_app/app/tests/test_data/valid/transactions_2.csv`</br>
-`bank_app/app/tests/test_data/valid/transactions_3.csv`</br>
+`bank_app/app/tests/data/correct/transactions_1.csv`</br>
+`bank_app/app/tests/data/correct/transactions_2.csv`</br>
+`bank_app/app/tests/data/correct/transactions_3.csv`</br>
 
 </details>
