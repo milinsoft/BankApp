@@ -30,6 +30,3 @@ jobs:
         if: success()
         run: docker push $DOCKER_IMAGE_NAME:${{ inputs.tag }}
         working-directory: ${{ env.DOCKERFILE_DIRECTORY }}
-      - name: Docker Logout
-        if: success()
-        run: docker logout
