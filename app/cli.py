@@ -6,28 +6,29 @@ from typing import TYPE_CHECKING
 from sqlalchemy.exc import SQLAlchemyError
 from tabulate import tabulate
 
-import settings
+from app.account import AccountType
+from app.account.services import AccountService
+from app.account.transaction.services import TransactionService
+from app.config import settings
 from app.database import Database
-from app.models import AccountType, BankApp
-from app.parsers import TransactionParser
-from app.services import AccountService, TransactionService
-from app.utils import UnitOfWork
+from app.parser import TransactionParser
+from app.uow import UoW
 
 if TYPE_CHECKING:
-    from app.schemas import STransaction
-    from app.utils import AbstractUnitOfWork
+    from app.account.transaction.type_annotations import TransactionsList
+    from app.uow import AbstractUoW
 
 
 _logger = getLogger(__name__)
 
 
-class BankAppCli(BankApp):
+class BankAppCli:
     def __init__(self, db: Database) -> None:
         self.acc_service: "AccountService" = AccountService()
         self.trx_service: "TransactionService" = TransactionService()
         self.db: "Database" = db
         self.account_id: int
-        self.uow: "AbstractUnitOfWork" = UnitOfWork(db)  # imported instance
+        self.uow: "AbstractUoW" = UoW(db)  # imported instance
         self.parser: "TransactionParser" = TransactionParser()
 
         self.menu_options = {
@@ -69,7 +70,7 @@ class BankAppCli(BankApp):
             self.acc_service.get_balance(self.uow, self.account_id, _date),
         )
 
-    def _search_transactions(self) -> list["STransaction"]:
+    def _search_transactions(self) -> "TransactionsList":
         return self.trx_service.get_by_date_range(
             self.uow, self.account_id, self._get_date("start_date"), self._get_date("end_date")
         )
@@ -132,7 +133,7 @@ class BankAppCli(BankApp):
         self.account_id = existing_account.id if existing_account else self.acc_service.create_one(self.uow, acc_type)
 
     @classmethod
-    def _get_transaction_table(cls, transactions: list["STransaction"]) -> str:
+    def _get_transaction_table(cls, transactions: "TransactionsList") -> str:
         """Return transactions in a tabular str format."""
         return tabulate(
             [(t.date, t.description, t.amount) for t in transactions],

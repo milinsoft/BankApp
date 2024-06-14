@@ -1,17 +1,19 @@
 from typing import TYPE_CHECKING
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, sessionmaker
 
-import settings
-from app.models.orm import Base
-from app.utils import Singleton
+from app.config import settings
 
 if TYPE_CHECKING:
     from sqlalchemy.engine import Engine
 
 
-class Database(metaclass=Singleton):
+class Base(DeclarativeBase):
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+
+
+class Database:
     """DB connection abstraction.
 
     DB url format: ``dialect[+driver]://user:password@host/dbname[?key=value..]``,  # pragma: allowlist secret
