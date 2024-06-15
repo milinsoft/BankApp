@@ -3,7 +3,7 @@ from datetime import date, timedelta
 from io import StringIO
 from unittest.mock import patch
 
-import settings
+from app.config import settings
 from app.tests.common import TestBankAppCommon, correct_test_files_dir
 from app.utils.helper_methods import to_decimal
 
@@ -57,10 +57,10 @@ class TestBankApp(TestBankAppCommon):
         # GIVEN
         parsed_data = self.parse_data(TRANSACTIONS_3, self.debit_acc_id)
         # WHEN
-        transaction_ids, balance = self._test_credit_limit(self.debit_acc_id, parsed_data, expect_error=False)
+        transaction_ids = self._test_credit_limit(self.debit_acc_id, parsed_data, expect_error=False)
         # THEN
         self.assertEqual(transaction_ids, [1])
-        self.assertEqual(balance, -3000)
+        self.assertEqual(self.get_balance(self.debit_acc_id), -3000)
 
     def test_05_transactions_lookup_by_range(self):
         """Test transactions search by range"""

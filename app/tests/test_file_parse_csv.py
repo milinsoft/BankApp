@@ -13,7 +13,7 @@ TRANSACTIONS_2 = f"{correct_test_files_dir}/transactions_2.csv"
 TRANSACTIONS_3 = f"{correct_test_files_dir}/transactions_3.csv"
 
 
-class TestFileParseCSV(TestBankAppCommon):
+class TestFileCsvStrategy(TestBankAppCommon):
     def test_01_parse_transactions(self):
         """Test parsing transactions and checking account balance."""
         # GIVEN
