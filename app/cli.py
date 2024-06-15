@@ -3,9 +3,6 @@ from logging import getLogger
 from os.path import exists
 from typing import TYPE_CHECKING
 
-from sqlalchemy.exc import SQLAlchemyError
-from tabulate import tabulate
-
 from app.account import AccountType
 from app.account.services import AccountService
 from app.account.transaction.services import TransactionService
@@ -51,8 +48,8 @@ class BankAppCli:
             trx_data = self.parser.parse_data(self.get_file_path(), account_id=self.account_id)
             _, balance = self.trx_service.create(self.uow, self.account_id, trx_data)
             print(f"Transactions have been loaded successfully! Current balance: {balance}")
-        except (ValueError, SQLAlchemyError) as err:
-            _logger.error(err)
+        except ValueError as e:
+            _logger.error(e)
 
     @classmethod
     def get_file_path(cls) -> str:
@@ -135,6 +132,8 @@ class BankAppCli:
     @classmethod
     def _get_transaction_table(cls, transactions: "TransactionsList") -> str:
         """Return transactions in a tabular str format."""
+        from tabulate import tabulate
+
         return tabulate(
             [(t.date, t.description, t.amount) for t in transactions],
             headers=["Date", "Description", "Amount"],
