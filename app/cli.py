@@ -9,11 +9,11 @@ from app.account.transaction.services import TransactionService
 from app.config import settings
 from app.database import Database
 from app.parser import TransactionParser
-from app.uow import UoW
+from app.utils.uow import UoW
 
 if TYPE_CHECKING:
     from app.account.transaction.type_annotations import TransactionsList
-    from app.uow import AbstractUoW
+    from app.utils.uow import AbstractUoW
 
 
 _logger = getLogger(__name__)

@@ -9,7 +9,7 @@ from app.account.schemas import SAccount, SAccountAdd
 from app.config import settings
 
 if TYPE_CHECKING:
-    from app.uow import AbstractUoW
+    from app.utils.uow import AbstractUoW
 
 
 class AccountService:

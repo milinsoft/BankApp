@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from sqlalchemy import select
 
-from app.repository import SqlAlchemyRepository
+from app.utils.repository import SqlAlchemyRepository
 
 from .models import Account
 
