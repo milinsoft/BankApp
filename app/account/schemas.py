@@ -2,7 +2,7 @@ from decimal import Decimal
 
 from pydantic import PositiveInt
 
-from app.schemas import ModelSchema
+from app.utils.schemas import ModelSchema
 
 
 class SAccountAdd(ModelSchema):

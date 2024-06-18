@@ -3,8 +3,8 @@ from decimal import Decimal, InvalidOperation
 
 from pydantic import PositiveInt, field_validator
 
-from app.schemas import ModelSchema
 from app.utils.helper_methods import to_decimal
+from app.utils.schemas import ModelSchema
 
 
 class STransactionAdd(ModelSchema):

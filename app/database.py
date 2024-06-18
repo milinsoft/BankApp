@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, sessionmaker
 
 from app.config import settings
+from app.utils.singleton import Singleton
 
 if TYPE_CHECKING:
     from sqlalchemy.engine import Engine
@@ -13,7 +14,7 @@ class Base(DeclarativeBase):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
 
 
-class Database:
+class Database(metaclass=Singleton):
     """DB connection abstraction.
 
     DB url format: ``dialect[+driver]://user:password@host/dbname[?key=value..]``,  # pragma: allowlist secret

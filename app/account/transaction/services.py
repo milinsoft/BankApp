@@ -8,7 +8,7 @@ from sqlalchemy import and_, desc
 from .type_annotations import TransactionsDataList, TransactionsList
 
 if TYPE_CHECKING:
-    from app.uow import AbstractUoW
+    from app.utils.uow import AbstractUoW
 
 IDs = Annotated[list[PositiveInt], "IDs"]
 trx_adapter = TypeAdapter(TransactionsList)
